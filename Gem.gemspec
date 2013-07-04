@@ -18,11 +18,11 @@ Gem::Specification.new do |spec|
   # Dependencies.
   # --------------------------------------------------------------------------
 
-  spec.add_development_dependency('webmock')
-  spec.add_development_dependency('rake')
-  spec.add_development_dependency('rspec')
-  spec.add_development_dependency('coveralls')
+  spec.add_development_dependency('webmock', '1.12.3')
+  spec.add_development_dependency('rake', '~> 10.1')
   spec.add_runtime_dependency('json', '~> 1.8.0')
   spec.add_runtime_dependency('faraday', '~> 0.8.6')
-  spec.add_development_dependency('luna-rspec-formatters')
+  spec.add_development_dependency('rspec', '~> 2.13.0')
+  spec.add_development_dependency('coveralls', '~> 0.6.7')
+  spec.add_development_dependency('luna-rspec-formatters', '~> 0.0.1')
 end
