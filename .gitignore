@@ -1,12 +1,8 @@
-/.ruby-gemset
-/.ruby-version
 /Gemfile.lock
 /coverage
 /vendor
-/.pryrc
-/.rvmrc
-/log
 /tmp
+/*.gem
 /.bundle
-/**/*.gem
-
+/.ruby-gemset
+/.ruby-version
