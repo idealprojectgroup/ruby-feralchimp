@@ -1,9 +1,8 @@
-$:.unshift("../../lib", __FILE__) if __FILE__ == $0
-require "feralchimp/version"
-require "faraday"
-require "json"
-require "uri"
-require "cgi"
+require_relative 'feralchimp/version'
+require 'faraday'
+require 'json'
+require 'uri'
+require 'cgi'
 
 # Allow for export(1).list flow.
 class FeralchimpErrorHash < Hash
@@ -33,7 +32,7 @@ class Feralchimp
   @exportar = false
   @raise = false
   @timeout = 5
-  @key = ENV["MAILCHIMP_API_KEY"]
+  @key = ENV['MAILCHIMP_API_KEY']
 
   [:KeyError, :MailchimpError].each do |o|
     const_set o, Class.new(StandardError)
@@ -55,7 +54,7 @@ class Feralchimp
     if self.class.raise
       raise error
     else
-      FeralchimpErrorHash.new({ "object" => error, "code" => 9001, "error" => error.message })
+      FeralchimpErrorHash.new({ 'object' => error, 'code' => 9001, 'error' => error.message })
     end
   end
 
@@ -94,7 +93,7 @@ class Feralchimp
 
   private
   def api_path(export = false)
-    export ? "/export/1.0/%s/" : "/1.3/?method=%s"
+    export ? '/export/1.0/%s/' : '/1.3/?method=%s'
   end
 
   private
@@ -104,8 +103,8 @@ class Feralchimp
 
   private
   def raise_or_return(rtn)
-    if self.class.raise && (rtn.is_a?(Hash) && rtn.has_key?("error"))
-      raise MailchimpError, rtn["error"]
+    if self.class.raise && (rtn.is_a?(Hash) && rtn.has_key?('error'))
+      raise MailchimpError, rtn['error']
     end
 
   rtn
