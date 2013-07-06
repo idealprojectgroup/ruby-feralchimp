@@ -1,43 +1,12 @@
-$:.unshift(File.expand_path("../../lib", __FILE__))
-ENV["RACK_ENV"] = "test"
-
-unless %W(no false).include?(ENV["COVERAGE"])
-  require "simplecov"
-  require "coveralls"
-
-  module Coveralls
-    NoiseBlacklist = [
-      "[Coveralls] Using SimpleCov's default settings.".green,
-      "[Coveralls] Set up the SimpleCov formatter.".green,
-      "[Coveralls] Outside the Travis environment, not sending data.".yellow
-    ]
-
-    def puts(message)
-      # Only prevent the useless noise on our terminals, not inside of the Travis or Circle CI.
-      unless NoiseBlacklist.include?(message) || ENV["TRAVIS"] == "true" || ENV["CI"] == "true"
-        $stdout.puts message
-      end
-    end
-  end
-
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-    SimpleCov::Formatter::HTMLFormatter,
-        Coveralls::SimpleCov::Formatter
-  ]
-
-  Coveralls.noisy = true
-  SimpleCov.start do
-    add_filter "/spec/"
-  end
-end
+require_relative '../support/simplecov'
+require_relative '../support/format'
+require 'webmock/rspec'
+require 'feralchimp'
+WebMock.disable_net_connect!
 
 MAILCHIMP_URL = %r!https://us6.api.mailchimp.com/1.3/\?method=(?:[a-z0-9]+)!
 EXPORT_URL = %r!https://us6.api.mailchimp.com/export/1.0/(?:[a-z0-9]+)!
 ERROR_URL = "https://us6.api.mailchimp.com/1.3/?method=error"
-
-require "webmock/rspec"
-require "feralchimp"
-WebMock.disable_net_connect!
 
 def get_stub_response(name)
   IO.read(File.expand_path("../../fixtures/#{name}.json", __FILE__))
