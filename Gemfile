@@ -13,7 +13,7 @@ group :development do
   gem 'rake'
 
   unless ENV['CI']
-    gem 'guard-rspec', '~> 3.0.2'
+    gem 'guard-rspec'
     gem 'listen', :github => 'envygeeks/listen'
   end
 end
