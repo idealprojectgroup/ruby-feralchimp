@@ -67,7 +67,7 @@ describe Feralchimp do
   it "allows users to enable raising" do
     stub_response(:mailchimp_url)
     Feralchimp.raise = true
-    expect { Feralchimp.hello }.to raise_error Feralchimp::KeyError
+    expect_error(Feralchimp::KeyError) { Feralchimp.hello }
   end
 
   it "allows users to set a constant key" do
@@ -97,7 +97,7 @@ describe Feralchimp do
 
   it "raises an ArgumentError if arguments are given" do
     Feralchimp.raise = true
-    expect { Feralchimp.export(true) }.to raise_error ArgumentError
+    expect_error(ArgumentError) { Feralchimp.export(true) }
   end
 
   it "outputs a hash" do
@@ -108,6 +108,6 @@ describe Feralchimp do
   it "raises errors that Mailchimp gives" do
     stub_response(:error_url)
     Feralchimp.raise = true
-    expect { Feralchimp.new("hello-us6").error }.to raise_error Feralchimp::MailchimpError
+    expect_error(Feralchimp::MailchimpError) { Feralchimp.new("hello-us6").error }
   end
 end
