@@ -29,6 +29,8 @@ class Object
 end
 
 class Feralchimp
+  @export_version = '1.0'
+  @api_version = '2.0'
   @exportar = false
   @raise = false
   @timeout = 5
@@ -93,7 +95,7 @@ class Feralchimp
 
   private
   def api_path(export = false)
-    export ? "/export/1.0/%s/" : "/1.3/?method=%s"
+    export ? "/export/#{self.class.export_version}/%s/" : "/#{self.class.api_version}/?method=%s"
   end
 
   private
@@ -111,7 +113,7 @@ class Feralchimp
   end
 
   class << self
-    attr_accessor :exportar, :raise, :timeout, :key
+    attr_accessor :exportar, :raise, :timeout, :key, :api_version, :export_version
     alias :apikey= :key=; alias :apikey :key
     alias :api_key= :key=; alias :api_key :key
 
