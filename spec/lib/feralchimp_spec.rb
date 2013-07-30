@@ -2,12 +2,25 @@ require "rspec/helper"
 
 describe Object do
   describe "#to_mailchimp_method" do
-    it "returns testMethod if given test_method" do
-      expect("test_method".to_mailchimp_method).to eq "testMethod"
+    context "v1.3" do
+      it "returns testMethod if given test_method" do
+        expect("test_method".to_mailchimp_method(1.3)).to eq "testMethod"
+      end
+
+      it "returns testMethod if given testMethod" do
+        expect("testMethod".to_mailchimp_method(1.3)).to eq "testMethod"
+      end
     end
 
-    it "returns testMethod if given testMethod" do
-      expect("testMethod".to_mailchimp_method).to eq "testMethod"
+    context "v2.0" do
+      it "returns test/method and test/method-name if given those" do
+        expect("test_method".to_mailchimp_method(2.0)).to eq "test/method"
+        expect("test_method_name".to_mailchimp_method(2.0)).to eq "test/method-name"
+      end
+
+      it "returns just test if given test" do
+        expect("test".to_mailchimp_method(2.0)).to eq "test"
+      end
     end
   end
 
@@ -32,8 +45,13 @@ describe FeralchimpErrorHash do
   end
 end
 
-describe Feralchimp do
+# ----------------------------------------------------------------------------
+# Shared examples that describe Feralchimp in 1.0 and 2.0 mode.
+# ----------------------------------------------------------------------------
+
+shared_examples :Feralchimp do
   before :each do
+    Feralchimp.api_version = @api_version
     ENV.delete("MAILCHIMP_API_KEY")
     Feralchimp.class_eval {
       @timeout = nil
@@ -59,25 +77,25 @@ describe Feralchimp do
   end
 
   it "allows users to disable raising" do
-    stub_response(:mailchimp_url)
+    stub_response(:mailchimp_url, @api_version)
     Feralchimp.raise = false
     expect(Feralchimp.error["error"]).to eq "Invalid key."
   end
 
   it "allows users to enable raising" do
-    stub_response(:mailchimp_url)
+    stub_response(:mailchimp_url, @api_version)
     Feralchimp.raise = true
     expect_error(Feralchimp::KeyError) { Feralchimp.hello }
   end
 
   it "allows users to set a constant key" do
-    stub_response(:mailchimp_url)
+    stub_response(:mailchimp_url, @api_version)
     Feralchimp.key = "hello-us6"
     expect(Feralchimp.lists).to eq "total" => 1
   end
 
   it "allows users to set an instance key" do
-    stub_response(:mailchimp_url)
+    stub_response(:mailchimp_url, @api_version)
     expect(Feralchimp.new("hello-us6").lists).to eq "total" => 1
   end
 
@@ -101,13 +119,35 @@ describe Feralchimp do
   end
 
   it "outputs a hash" do
-    stub_response(:mailchimp_url)
+    stub_response(:mailchimp_url, @api_version)
     expect(Feralchimp.new("hello-us6").lists).to eq "total" => 1
   end
 
   it "raises errors that Mailchimp gives" do
-    stub_response(:error_url)
+    stub_response(:error_url, @api_version)
     Feralchimp.raise = true
     expect_error(Feralchimp::MailchimpError) { Feralchimp.new("hello-us6").error }
+  end
+end
+
+# ----------------------------------------------------------------------------
+# The actual testing.
+# ----------------------------------------------------------------------------
+
+describe Feralchimp do
+  context "v1.3" do
+    before do
+      @api_version = 1.3
+    end
+
+    it_behaves_like :Feralchimp
+  end
+
+  context "v2.0" do
+    before do
+      @api_version = 2.0
+    end
+
+    it_behaves_like :Feralchimp
   end
 end

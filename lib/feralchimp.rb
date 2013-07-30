@@ -17,14 +17,25 @@ class FeralchimpErrorHash < Hash
 end
 
 class Object
-  def to_mailchimp_method
-    self.to_s.gsub(/_(.)/) do
-      $1.capitalize
-    end
+  def to_mailchimp_method(api_version)
+    api_version.to_f >= 2.0 ? __to_mailchimp_2_method : __to_mailchimp_1_method
   end
 
   def blank?
     respond_to?(:empty?) ? (empty?) : (!self)
+  end
+
+  private
+  def __to_mailchimp_2_method
+   out = self.to_s.split("_")
+   "#{out[0]}#{("/" + out[1..-1].join("-")) if out.count > 1}"
+  end
+
+  private
+  def __to_mailchimp_1_method
+    self.to_s.gsub(/_(.)/) do
+      $1.capitalize
+    end
   end
 end
 
@@ -64,12 +75,13 @@ class Feralchimp
   def send_to_mailchimp(method, bananas = {}, export = self.class.exportar)
     key = parse_key(bananas.delete(:apikey) || @key)
     self.class.exportar = false
-    method = method.to_mailchimp_method
+    method = method.to_mailchimp_method(self.class.api_version)
     send_to_mailchimp_http(key.last, method, bananas.merge(apikey: key.first), export)
   end
 
   private
   def send_to_mailchimp_http(zone, method, bananas, export)
+    bananas = bananas.to_json if self.class.api_version.to_f >= 2.0
     raise_or_return mailchimp_http(zone, export).post(api_path(export) % method, bananas).body
   end
 
@@ -78,10 +90,16 @@ class Feralchimp
     Faraday.new(:url => api_url(zone)) do |http|
       http.options[:open_timeout] = self.class.timeout
       http.options[:timeout] = self.class.timeout
-      http.request(:url_encoded)
-      http.adapter(Faraday.default_adapter)
+      mailchimp_extra_headers(http)
       http.response(export ? :mailchimp_export : :mailchimp)
+      http.adapter(Faraday.default_adapter)
     end
+  end
+
+  private
+  def mailchimp_extra_headers(obj)
+    self.class.api_version.to_f >= 2.0 ?
+      obj.headers[:content_type] = "application/json" : obj.request(:url_encoded)
   end
 
   private
@@ -95,7 +113,12 @@ class Feralchimp
 
   private
   def api_path(export = false)
-    export ? "/export/#{self.class.export_version}/%s/" : "/#{self.class.api_version}/?method=%s"
+    if export
+      "/export/#{self.class.export_version}/%s/"
+    else
+      self.class.api_version.to_f >= 2.0 ?
+        "/#{self.class.api_version}/%s.json" : "/#{self.class.api_version}/?method=%s"
+    end
   end
 
   private

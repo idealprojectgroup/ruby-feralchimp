@@ -4,6 +4,18 @@
 
 Feralchimp is a Ruby based API wrapper for the MailChimp API, it is modeled after [Gibbon](https://github.com/amro/gibbon) and it is not meant to be a replacement for the excellent [Gibbon](https://github.com/amro/gibbon)... that is unless you are seeking better control over your HTTP. On that note, it is certainly not meant to be better than the already excellent [Gibbon](https://github.com/amro/gibbon) wrapper. The idea did not spawn from hatred...well not of Gibbon, just of the fact that I had HTTParty and Faraday in the same Rails app when I could have had only Faraday.
 
+## Important information about Feralchimp and Mailchimp 2.0
+
+Mailchimps 2.0 API is a moving target as they imply.  I do not know if they
+have their specs fully defined but as of right now we are fully compatible
+with both the 1.3 and the 2.0 API.  You can switch between the apis using
+`Feralchimp.api_version = 1.3` and `Feralchimp.api_version = 2.0` respectively.
+
+To hit your end point properly you should take the rest api and convert it to
+an underscore chain.  For example if your end point is 'lists/batch-subscribe'
+you would simply call `Feralchimp.lists_batch_subscribe` and it will hit that
+end point.
+
 ## Installation:
 ```sh
 gem install feralchimp
