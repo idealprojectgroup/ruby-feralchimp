@@ -4,7 +4,7 @@
 
 Feralchimp is a Ruby based API wrapper for the MailChimp API, it is modeled after [Gibbon](https://github.com/amro/gibbon) and it is not meant to be a replacement for the excellent [Gibbon](https://github.com/amro/gibbon)... that is unless you are seeking better control over your HTTP. On that note, it is certainly not meant to be better than the already excellent [Gibbon](https://github.com/amro/gibbon) wrapper. The idea did not spawn from hatred...well not of Gibbon, just of the fact that I had HTTParty and Faraday in the same Rails app when I could have had only Faraday.
 
-## Important information about Feralchimp and Mailchimp 2.0
+## Important information about Mailchimp 2.0
 
 Mailchimps 2.0 API is a moving target as they imply.  I do not know if they
 have their specs fully defined but as of right now we are fully compatible
