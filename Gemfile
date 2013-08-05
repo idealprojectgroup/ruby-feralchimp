@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 gemspec
 
 group :development do
@@ -7,5 +7,4 @@ group :development do
   end
 
   gem "rake"
-  gem "require_relative", :platforms => :ruby_18
 end
