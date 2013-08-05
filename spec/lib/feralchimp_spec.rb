@@ -33,7 +33,7 @@ end
 
 describe FeralchimpErrorHash do
   it "returns the hash if given a hash" do
-    expect(FeralchimpErrorHash.new(:test => 1)).to eq test: 1
+    expect(FeralchimpErrorHash.new(:test => 1)).to eq :test => 1
   end
 
   it "returns a hash if given nothing" do
