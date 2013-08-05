@@ -7,4 +7,5 @@ group :development do
   end
 
   gem "rake"
+  gem "require_relative", :platforms => :ruby_18
 end

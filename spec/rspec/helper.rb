@@ -1,4 +1,4 @@
-require_relative "../support/simplecov"
+require "support/simplecov"
 require "luna/rspec/formatters/checks"
 require "rspec/expect_error"
 require "webmock/rspec"
