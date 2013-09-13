@@ -40,8 +40,8 @@ class Object
 end
 
 class Feralchimp
-  @export_version = '1.0'
-  @api_version = '2.0'
+  @export_version = "1.0"
+  @api_version = "2.0"
   @exportar = false
   @raise = false
   @timeout = 5
@@ -67,31 +67,38 @@ class Feralchimp
     if self.class.raise
       raise error
     else
-      FeralchimpErrorHash.new({ "object" => error, "code" => 9001, "error" => error.message })
+      FeralchimpErrorHash.new({
+        "object" => error,
+        "code" => 9001,
+        "error" => error.message
+      })
     end
   end
 
   private
   def send_to_mailchimp(method, bananas = {}, export = self.class.exportar)
+    method = method.to_mailchimp_method(self.class.api_version)
     key = parse_key(bananas.delete(:apikey) || @key)
     self.class.exportar = false
-    method = method.to_mailchimp_method(self.class.api_version)
-    send_to_mailchimp_http(key.last, method, bananas.merge(:apikey => key.first), export)
+    bananas = bananas.merge(:apikey => key.first)
+    send_to_mailchimp_http(key.last, method, bananas, export)
   end
 
   private
   def send_to_mailchimp_http(zone, method, bananas, export)
     bananas = bananas.to_json if self.class.api_version.to_f >= 2.0
-    raise_or_return mailchimp_http(zone, export).post(api_path(export) % method, bananas).body
+    out = mailchimp_http(zone, export)
+    out = out.post(api_path(export) % method, bananas).body
+    raise_or_return out
   end
 
   private
   def mailchimp_http(zone, export)
     Faraday.new(:url => api_url(zone)) do |http|
+      http.response(export ? :mailchimp_export : :mailchimp)
       http.options[:open_timeout] = self.class.timeout
       http.options[:timeout] = self.class.timeout
       mailchimp_extra_headers(http)
-      http.response(export ? :mailchimp_export : :mailchimp)
       http.adapter(Faraday.default_adapter)
     end
   end
@@ -116,8 +123,11 @@ class Feralchimp
     if export
       "/export/#{self.class.export_version}/%s/"
     else
-      self.class.api_version.to_f >= 2.0 ?
-        "/#{self.class.api_version}/%s.json" : "/#{self.class.api_version}/?method=%s"
+      if self.class.api_version.to_f >= 2.0
+        "/#{self.class.api_version}/%s.json"
+      else
+        "/#{self.class.api_version}/?method=%s"
+      end
     end
   end
 
@@ -137,8 +147,11 @@ class Feralchimp
 
   class << self
     attr_accessor :exportar, :raise, :timeout, :key, :api_version, :export_version
-    alias :apikey= :key=; alias :apikey :key
-    alias :api_key= :key=; alias :api_key :key
+
+    [:api_key, :apikey].each do |k|
+      alias_method k, :key
+      alias_method "#{k}=".to_sym, :key=
+    end
 
     def method_missing(method, *args)
       new.send(*args.unshift(method))
@@ -148,25 +161,25 @@ class Feralchimp
   module Response
     class JSON < Faraday::Middleware
       def call(environment)
-        @app.call(environment).on_complete { |env|
+        @app.call(environment).on_complete do |env|
           env[:raw_body] = env[:body]
           env[:body] =
             ::JSON.parse("[" + env[:raw_body].to_s + "]").first
-        }
+        end
       end
     end
 
     class JSONExport < Faraday::Middleware
       def call(environment)
-        @app.call(environment).on_complete { |env|
+        @app.call(environment).on_complete do |env|
           env[:raw_body] = env[:body]
 
           body = env[:body].each_line.to_a
           keys = ::JSON.parse(body.shift)
-          env[:body] = body.inject([]) { |a, k|
+          env[:body] = body.inject([]) do |a, k|
             a.push(Hash[keys.zip(::JSON.parse(k))])
-          }
-        }
+          end
+        end
       end
     end
   end
