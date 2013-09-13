@@ -6,9 +6,8 @@ Feralchimp is a Ruby based API wrapper for the MailChimp API, it is modeled afte
 
 ## Important information about Mailchimp 2.0
 
-Mailchimps 2.0 API is a moving target as they imply.  I do not know if they
-have their specs fully defined but as of right now we are fully compatible
-with both the 1.3 and the 2.0 API.  You can switch between the apis using
+Even though Mailchimp API 1.3 is deprecated we will continue to support for
+a few months... You can switch between the old 1.3 and the new 2.0 apis using
 `Feralchimp.api_version = 1.3` and `Feralchimp.api_version = 2.0` respectively.
 
 To hit your end point properly you should take the rest api and convert it to
