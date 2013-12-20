@@ -7,7 +7,7 @@ require "cgi"
 # Allow for export(1).list flow.
 class FeralchimpErrorHash < Hash
   def initialize(hash = nil)
-    self.replace(hash) if Hash === hash
+    self.replace(hash)
     super
   end
 
