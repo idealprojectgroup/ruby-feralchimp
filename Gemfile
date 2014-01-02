@@ -8,3 +8,9 @@ group :development do
 
   gem "rake"
 end
+
+group :test do
+  platforms :rbx do
+    gem "rubysl"
+  end
+end
