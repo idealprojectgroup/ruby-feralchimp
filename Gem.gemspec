@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("rspec", "~> 2.14")
   spec.add_development_dependency("webmock", "~> 1.13")
   spec.add_development_dependency("rspec-expect_error", "~> 0.0")
-  spec.add_development_dependency("envygeeks-coveralls", "~> 0.1")
+  spec.add_development_dependency("envygeeks-coveralls", "~> 0.2")
   spec.add_development_dependency("luna-rspec-formatters", "~> 0.4")
 end
