@@ -12,5 +12,6 @@ end
 group :test do
   platforms :rbx do
     gem "rubysl"
+    gem "rubinius-coverage"
   end
 end
