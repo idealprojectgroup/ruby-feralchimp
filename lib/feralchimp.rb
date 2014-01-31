@@ -3,8 +3,16 @@ require "faraday"
 require "json"
 
 class Feralchimp
-  [:KeyError, :MailchimpError].each do |o|
-    const_set o, Class.new(StandardError)
+  class MailchimpError < StandardError
+    def initialize(msg)
+      super
+    end
+  end
+
+  class KeyError < StandardError
+    def initialize(msg)
+      super
+    end
   end
 
   @raise = false
