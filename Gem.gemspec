@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Jordon Bedwell"]
 
   spec.add_runtime_dependency("json", "~> 1.8")
-  spec.add_runtime_dependency("faraday", "~> 0.8")
+  spec.add_runtime_dependency("faraday", "~> 0.8.9")
   spec.add_development_dependency("rspec", "~> 2.14")
   spec.add_development_dependency("webmock", "~> 1.16")
   spec.add_development_dependency("rspec-expect_error", "~> 0")
