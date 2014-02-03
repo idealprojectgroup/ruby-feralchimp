@@ -63,14 +63,15 @@ class Feralchimp
   protected
   def parse_mailchimp_key(api_key)
   api_key = api_key.to_s
-    if api_key && ! api_key.empty? && api_key =~ %r![a-z0-9]+-[a-z]{2}\d{1}!
+    if ! api_key || api_key.empty? || api_key !~ %r![a-z0-9]+-[a-z]{2}\d{1}!
+      raise KeyError, "Invalid key#{": #{api_key}" unless api_key.empty?}."
+    else
       api_key = api_key.to_s.split("-")
+
       {
         :region => api_key.last,
         :secret => api_key.first
       }
-    else
-      raise KeyError, "Invalid key#{": #{api_key}" unless api_key.empty?}."
     end
   end
 
@@ -116,8 +117,7 @@ class Feralchimp
       def call(environment)
         @app.call(environment).on_complete do |e|
           e[:raw_body] = e[:body]
-          e[:body] =
-            ::JSON.parse("[" + e[:raw_body].to_s + "]").first
+          e[:body] = ::JSON.parse("[" + e[:raw_body].to_s + "]").first
         end
       end
     end
