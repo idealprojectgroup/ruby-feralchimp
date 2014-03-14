@@ -17,11 +17,11 @@ class Feralchimp
 
   @raise = false
   @exportar = false
-  @api_key = ENV["MAILCHIMP_API_KEY"]
+  @api_key = nil
   @timeout = 5
 
   def initialize(opts = {})
-    @raw_api_key = opts[:api_key] || self.class.api_key
+    @raw_api_key = opts[:api_key] || self.class.api_key || ENV["MAILCHIMP_API_KEY"]
     @api_key = parse_mailchimp_key(@raw_api_key)
   end
 
