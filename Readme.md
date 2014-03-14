@@ -24,10 +24,10 @@ There is one setter called `exportar` (Spanish for export) that is a public but 
 
 ```ruby
 Feralchimp.api_key = api_key
-Feralchimp.new.lists #=> {}
-Feralchimp.lists #=> {}
+Feralchimp.new.lists_list #=> {}
+Feralchimp.lists_list #=> {}
 
-Feralchimp.new(:api_key => api_key).lists # => {}
+Feralchimp.new(:api_key => api_key).lists_list # => {}
 ```
 
 Using the class creates a new instance each run but you also have the option to create your own persistant instance so you can control key state.  When creating a new instance you can send an optional api key which will be set for that instance only.
