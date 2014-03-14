@@ -46,6 +46,26 @@ describe Feralchimp do
     })
   end
 
+  context "when MAILCHIMP_API_KEY is set in the environment" do
+    before do
+      ENV['MAILCHIMP_API_KEY'] = 'foo-us6'
+    end
+
+    after do
+      ENV['MAILCHIMP_API_KEY'] = nil
+    end
+
+    it "defaults to the key sent in the environment" do
+      stub_response(:mailchimp_url)
+      expect(Feralchimp.lists).to eq({
+        "total" => 1
+      })
+      expect(Feralchimp.new.lists).to eq({
+        "total" => 1
+      })
+    end
+  end
+
   context ".export" do
     it "parses the output to an array of hashes" do
       stub_response(:export_url)
