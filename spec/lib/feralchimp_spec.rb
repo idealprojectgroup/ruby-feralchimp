@@ -84,9 +84,7 @@ describe Feralchimp do
 
     it "doesn't allow arguments" do
       Feralchimp.api_key = "foo-us6"
-      expect_error(ArgumentError) do
-        Feralchimp.export(true)
-      end
+      expect { Feralchimp.export(true) }.to raise_error ArgumentError
     end
   end
 
@@ -99,28 +97,22 @@ describe Feralchimp do
 
   it "raises the error that Mailchimp gives" do
     stub_response(:error_url)
-    expect_error(Feralchimp::MailchimpError) do
-      Feralchimp.new(:api_key => "foo-us6").error
-    end
+    expect { Feralchimp.new(:api_key => "foo-us6").error
+      }.to raise_error Feralchimp::MailchimpError
   end
 
   it "skips if the method is to_ary" do
-    expect_error(NoMethodError) do
-      Feralchimp.to_ary
-    end
+    expect { Feralchimp.to_ary }.to raise_error NoMethodError
   end
 
   describe "#parse_key" do
     it "doesn't allow invalid keys" do
-      expect_error(Feralchimp::KeyError) do
-        Feralchimp.new(:api_key => "foo").foo
-      end
+      expect { Feralchimp.new(:api_key => "foo")
+        }.to raise_error Feralchimp::KeyError
     end
 
     it "doesn't allow nil values" do
-      expect_error(Feralchimp::KeyError) do
-        Feralchimp.new.foo
-      end
+      expect { Feralchimp.new.foo }.to raise_error Feralchimp::KeyError
     end
   end
 end
