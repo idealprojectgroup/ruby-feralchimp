@@ -1,9 +1,5 @@
 require "rspec/helper"
 
-# ---------------------------------------------------------------------
-# Shared examples that describe Feralchimp in 1.0 and 2.0 mode.
-# ---------------------------------------------------------------------
-
 describe Feralchimp do
   describe "#to_mailchimp_method" do
     subject do
