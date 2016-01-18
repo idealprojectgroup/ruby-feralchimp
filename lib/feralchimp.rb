@@ -128,9 +128,14 @@ class Feralchimp
           e[:raw_body] = e[:body]
 
           body = e[:body].each_line.to_a
-          keys = ::JSON.parse(body.shift)
-          e[:body] = body.inject([]) do |a, k|
-            a.push(Hash[keys.zip(::JSON.parse(k))])
+
+          e[:body] = if ::JSON.parse(body.first).is_a?(Hash)
+            body.map { |line| ::JSON.parse(line) }
+          else
+            keys = ::JSON.parse(body.shift)
+            body.inject([]) do |a, k|
+              a.push(Hash[keys.zip(::JSON.parse(k))])
+            end
           end
         end
       end

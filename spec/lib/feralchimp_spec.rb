@@ -84,6 +84,35 @@ describe Feralchimp do
     end
   end
 
+  context ".export.campaignSubscriberActivity" do
+    it "parses the output to an array of hashes" do
+      stub_response(:export_json_objects_url)
+      expect(Feralchimp.new(:api_key => "foo-us6").export.campaignSubscriberActivity(id: "abcdefg")).to eq([
+        {
+          "jack@example.com" => [
+            {
+              "action" => "open",
+              "timestamp" => "2016-01-06 21:45:34",
+              "url"=> nil,
+              "ip" => "10.0.0.1"
+            }
+          ]
+        },
+
+        {
+          "jill@example.com" => [
+            {
+              "action" => "open",
+              "timestamp" => "2016-01-06 22:08:45",
+              "url"=> nil,
+              "ip" => "10.0.0.1"
+            }
+          ]
+        }
+      ])
+    end
+  end
+
   it "outputs a hash" do
     stub_response(:mailchimp_url)
     expect(Feralchimp.new(:api_key => "foo-us6").lists).to eq({
